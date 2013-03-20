@@ -29,30 +29,22 @@
 */
 
 /** \file
+ *  \brief Application Configuration Header File
  *
- *  Header file for BootloaderAPI.c.
+ *  This is a header file which is be used to configure LUFA's
+ *  compile time options, as an alternative to the compile time
+ *  constants supplied through a makefile.
+ *
+ *  For information on what each token does, refer to the 
+ *  \ref Sec_Options section of the application documentation.
  */
 
-#ifndef _BOOTLOADER_API_H_
-#define _BOOTLOADER_API_H_
+#ifndef _APP_CONFIG_H_
+#define _APP_CONFIG_H_
 
-	/* Includes: */
-		#include <avr/io.h>
-		#include <avr/boot.h>
-		#include <stdbool.h>
-
-		#include <LUFA/Common/Common.h>
-
-		#include "Config/AppConfig.h"
-		
-	/* Function Prototypes: */
-		void    BootloaderAPI_ErasePage(const uint32_t Address);
-		void    BootloaderAPI_WritePage(const uint32_t Address);
-		void    BootloaderAPI_FillWord(const uint32_t Address, const uint16_t Word);
-		uint8_t BootloaderAPI_ReadSignature(const uint16_t Address);
-		uint8_t BootloaderAPI_ReadFuse(const uint16_t Address);
-		uint8_t BootloaderAPI_ReadLock(void);
-		void    BootloaderAPI_WriteLock(const uint8_t LockBits);
+//	#define NO_BLOCK_SUPPORT
+//	#define NO_EEPROM_BYTE_SUPPORT
+//	#define NO_FLASH_BYTE_SUPPORT
+//	#define NO_LOCK_BYTE_WRITE_SUPPORT
 
 #endif
-

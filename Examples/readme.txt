@@ -17,7 +17,7 @@ To get rid of all build files, use the command 'make clean'.
 To program:
 You can download a program a hex file to your Sparkfun 32u4 Breakout Board by first
 hitting the physical reset button on the device.  This will put the device into
-its bootloader state for 7 seconds.  Then use the command 'make program'.
+its bootloader state.  Then use the command 'make program'.
 
 
 Examples:
@@ -65,7 +65,6 @@ the first time you plug your board in.
 Now that the board is programmed with an application the board will start in the 
 user application when turned on.  If you want to reprogram a user application, 
 you'll want to run the bootloader again.  To do this just hit the manual reset button
-on the board.  Whenever the reset button is pressed, the bootloader runs for 7 
-seconds to allow time for programming via avrdude before switching to the user's 
-application.  So for programming in the future, just hit reset, type make program 
-and hit enter.  The programming will fail if the board isn't in its bootloader state.
+on the board.  Whenever the reset button is pressed, the bootloader runs.  So for 
+programming in the future, just hit reset, type make program and hit enter.  
+The programming will fail if the board isn't in its bootloader state.

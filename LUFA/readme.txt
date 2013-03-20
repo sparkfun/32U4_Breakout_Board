@@ -21,19 +21,19 @@ Notes from SparkFun:
 In order to compile the modified LUFA bootloader, or the Virtual Serial
 example for your Sparkfun 32u4 Breakout Board, follow these instructions:
 
-1. Download the LUFA Project, version 120219
+1. Download the LUFA Project, version 130303
 
-Visit http://www.lufa-lib.org, then download LUFA-120219.zip
+Visit http://www.lufa-lib.org, then download LUFA-130303.zip
 
 Alternatively, use the following official link to the file:
-lufa-lib.googlecode.com/files/LUFA-120219.zip
+lufa-lib.googlecode.com/files/LUFA-130303.zip
 
 2. Extract the zip file somewhere on your computer.
 
 3. Copy the contents of the 'LUFA' folder from the zip to this folder.
 
 The folder should be in the main directory:
-\LUFA-120219\LUFA
+\LUFA-130303\LUFA
 
 Copy everything in that folder to this one where this readme resides:
 \SFE_32U4_Breakout_Board\LUFA

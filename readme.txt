@@ -4,7 +4,7 @@ This directory contains the bootloader and example source files for
 Sparkfun's 32u4 Breakout board. Both were built on WinXP sp3 with
 WinAVR-20100110 and AVRDUDE 5.10.
 
-The bootloader is a modified LUFA-120219 CDC bootloader.
+The bootloader is a modified LUFA-130303 CDC bootloader.
 
 The bootloader directory contains the source and hex file for the bootloader
 that ships with this board.  When you first plug in the board to a Windows

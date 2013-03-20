@@ -1,13 +1,13 @@
 /*
              LUFA Library
-     Copyright (C) Dean Camera, 2012.
+     Copyright (C) Dean Camera, 2013.
 
   dean [at] fourwalledcubicle [dot] com
            www.lufa-lib.org
 */
 
 /*
-  Copyright 2012  Dean Camera (dean [at] fourwalledcubicle [dot] com)
+  Copyright 2013  Dean Camera (dean [at] fourwalledcubicle [dot] com)
 
   Permission to use, copy, modify, distribute, and sell this
   software and its documentation for any purpose is hereby granted
@@ -18,7 +18,7 @@
   advertising or publicity pertaining to distribution of the
   software without specific, written prior permission.
 
-  The author disclaim all warranties with regard to this
+  The author disclaims all warranties with regard to this
   software, including all implied warranties of merchantability
   and fitness.  In no event shall the author be liable for any
   special, indirect or consequential damages or any damages
@@ -33,8 +33,6 @@
  *  USB Device Descriptors, for library use when in USB device mode. Descriptors are special
  *  computer-readable structures which the host requests upon device enumeration, to determine
  *  the device's capabilities and functions.
- *
- *  This file has been modified to use Sparkfun's Development VID and 32u4 Breakout Board's PID
  */
 
 #include "Descriptors.h"
@@ -55,12 +53,12 @@ const USB_Descriptor_Device_t DeviceDescriptor =
 
 	.Endpoint0Size          = FIXED_CONTROL_ENDPOINT_SIZE,
 
-	.VendorID               = 0x1B4F, // 1B4F: Sparkfun's Development VID
-	.ProductID              = 0x0007, // 0007: Sparkfun's 32u4 Breakout Board PID
+	.VendorID               = 0x1B4F,
+	.ProductID              = 0x0007,
 	.ReleaseNumber          = VERSION_BCD(01.00),
 
-	.ManufacturerStrIndex   = NO_DESCRIPTOR,
-	.ProductStrIndex        = 0x01,
+	.ManufacturerStrIndex   = 0x01,
+	.ProductStrIndex        = 0x02,
 	.SerialNumStrIndex      = NO_DESCRIPTOR,
 
 	.NumberOfConfigurations = FIXED_NUM_CONFIGURATIONS
@@ -117,7 +115,7 @@ const USB_Descriptor_Configuration_t ConfigurationDescriptor =
 			.Header                 = {.Size = sizeof(USB_CDC_Descriptor_FunctionalACM_t), .Type = DTYPE_CSInterface},
 			.Subtype                = 0x02,
 
-			.Capabilities           = 0x06,
+			.Capabilities           = 0x00,
 		},
 
 	.CDC_Functional_Union =
@@ -133,7 +131,7 @@ const USB_Descriptor_Configuration_t ConfigurationDescriptor =
 		{
 			.Header                 = {.Size = sizeof(USB_Descriptor_Endpoint_t), .Type = DTYPE_Endpoint},
 
-			.EndpointAddress        = (ENDPOINT_DIR_IN | CDC_NOTIFICATION_EPNUM),
+			.EndpointAddress        = CDC_NOTIFICATION_EPADDR,
 			.Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
 			.EndpointSize           = CDC_NOTIFICATION_EPSIZE,
 			.PollingIntervalMS      = 0xFF
@@ -159,20 +157,20 @@ const USB_Descriptor_Configuration_t ConfigurationDescriptor =
 		{
 			.Header                 = {.Size = sizeof(USB_Descriptor_Endpoint_t), .Type = DTYPE_Endpoint},
 
-			.EndpointAddress        = (ENDPOINT_DIR_OUT | CDC_RX_EPNUM),
+			.EndpointAddress        = CDC_RX_EPADDR,
 			.Attributes             = (EP_TYPE_BULK | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
 			.EndpointSize           = CDC_TXRX_EPSIZE,
-			.PollingIntervalMS      = 0x01
+			.PollingIntervalMS      = 0x05
 		},
 
 	.CDC_DataInEndpoint =
 		{
 			.Header                 = {.Size = sizeof(USB_Descriptor_Endpoint_t), .Type = DTYPE_Endpoint},
 
-			.EndpointAddress        = (ENDPOINT_DIR_IN | CDC_TX_EPNUM),
+			.EndpointAddress        = CDC_TX_EPADDR,
 			.Attributes             = (EP_TYPE_BULK | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
 			.EndpointSize           = CDC_TXRX_EPSIZE,
-			.PollingIntervalMS      = 0x01
+			.PollingIntervalMS      = 0x05
 		}
 };
 
@@ -187,15 +185,26 @@ const USB_Descriptor_String_t LanguageString =
 	.UnicodeString          = {LANGUAGE_ID_ENG}
 };
 
+/** Manufacturer descriptor string. This is a Unicode string containing the manufacturer's details in human readable
+ *  form, and is read out upon request by the host when the appropriate string ID is requested, listed in the Device
+ *  Descriptor.
+ */
+const USB_Descriptor_String_t ManufacturerString =
+{
+	.Header                 = {.Size = USB_STRING_LEN(11), .Type = DTYPE_String},
+
+	.UnicodeString          = L"Dean Camera"
+};
+
 /** Product descriptor string. This is a Unicode string containing the product's details in human readable form,
  *  and is read out upon request by the host when the appropriate string ID is requested, listed in the Device
  *  Descriptor.
  */
 const USB_Descriptor_String_t ProductString =
 {
-	.Header                 = {.Size = USB_STRING_LEN(18), .Type = DTYPE_String},
+	.Header                 = {.Size = USB_STRING_LEN(8), .Type = DTYPE_String},
 
-	.UnicodeString          = L"AVR CDC Bootloader"
+	.UnicodeString          = L"LUFA CDC"
 };
 
 /** This function is called by the library when in device mode, and must be overridden (see LUFA library "USB Descriptors"
@@ -230,7 +239,12 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,
 				Address = &LanguageString;
 				Size    = LanguageString.Header.Size;
 			}
-			else
+			else if (DescriptorNumber == 0x01)
+			{
+				Address = &ManufacturerString;
+				Size    = ManufacturerString.Header.Size;
+			}
+			else if (DescriptorNumber == 0x02)
 			{
 				Address = &ProductString;
 				Size    = ProductString.Header.Size;

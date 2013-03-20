@@ -1,13 +1,13 @@
 /*
              LUFA Library
-     Copyright (C) Dean Camera, 2012.
+     Copyright (C) Dean Camera, 2013.
 
   dean [at] fourwalledcubicle [dot] com
            www.lufa-lib.org
 */
 
 /*
-  Copyright 2012  Dean Camera (dean [at] fourwalledcubicle [dot] com)
+  Copyright 2013  Dean Camera (dean [at] fourwalledcubicle [dot] com)
 
   Permission to use, copy, modify, distribute, and sell this
   software and its documentation for any purpose is hereby granted
@@ -18,7 +18,7 @@
   advertising or publicity pertaining to distribution of the
   software without specific, written prior permission.
 
-  The author disclaim all warranties with regard to this
+  The author disclaims all warranties with regard to this
   software, including all implied warranties of merchantability
   and fitness.  In no event shall the author be liable for any
   special, indirect or consequential damages or any damages
@@ -47,6 +47,7 @@
 
 		#include "Descriptors.h"
 		#include "BootloaderAPI.h"
+		#include "Config/AppConfig.h"
 
 		#include <LUFA/Drivers/USB/USB.h>
 		#include <LUFA/Drivers/Board/LEDs.h>
@@ -64,8 +65,54 @@
 		/** Hardware version minor of the CDC bootloader. */
 		#define BOOTLOADER_HWVERSION_MINOR   0x00
 
-		/** Eight character bootloader firmware identifier reported to the host when requested */
+		/** Eight character bootloader firmware identifier reported to the host when requested. */
 		#define SOFTWARE_IDENTIFIER          "LUFACDC"
+
+		/** Magic bootloader key to unlock forced application start mode. */
+		#define MAGIC_BOOT_KEY               0xDC42
+
+	/* Enums: */
+		/** Possible memory types that can be addressed via the bootloader. */
+		enum AVR109_Memories
+		{
+			MEMORY_TYPE_FLASH  = 'F',
+			MEMORY_TYPE_EEPROM = 'E',
+		};
+
+		/** Possible commands that can be issued to the bootloader. */
+		enum AVR109_Commands
+		{
+			AVR109_COMMAND_Sync                     = 27,
+			AVR109_COMMAND_ReadEEPROM               = 'd',
+			AVR109_COMMAND_WriteEEPROM              = 'D',
+			AVR109_COMMAND_ReadFLASHWord            = 'R',
+			AVR109_COMMAND_WriteFlashPage           = 'm',
+			AVR109_COMMAND_FillFlashPageWordLow     = 'c',
+			AVR109_COMMAND_FillFlashPageWordHigh    = 'C',
+			AVR109_COMMAND_GetBlockWriteSupport     = 'b',
+			AVR109_COMMAND_BlockWrite               = 'B',
+			AVR109_COMMAND_BlockRead                = 'g',
+			AVR109_COMMAND_ReadExtendedFuses        = 'Q',
+			AVR109_COMMAND_ReadHighFuses            = 'N',
+			AVR109_COMMAND_ReadLowFuses             = 'F',
+			AVR109_COMMAND_ReadLockbits             = 'r',
+			AVR109_COMMAND_WriteLockbits            = 'l',
+			AVR109_COMMAND_EraseFLASH               = 'e',
+			AVR109_COMMAND_ReadSignature            = 's',
+			AVR109_COMMAND_ReadBootloaderSWVersion  = 'V',
+			AVR109_COMMAND_ReadBootloaderHWVersion  = 'v',
+			AVR109_COMMAND_ReadBootloaderIdentifier = 'S',
+			AVR109_COMMAND_ReadBootloaderInterface  = 'p',
+			AVR109_COMMAND_SetCurrentAddress        = 'A',
+			AVR109_COMMAND_ReadAutoAddressIncrement = 'a',
+			AVR109_COMMAND_ReadPartCode             = 't',
+			AVR109_COMMAND_EnterProgrammingMode     = 'P',
+			AVR109_COMMAND_LeaveProgrammingMode     = 'L',
+			AVR109_COMMAND_SelectDeviceType         = 'T',
+			AVR109_COMMAND_SetLED                   = 'x',
+			AVR109_COMMAND_ClearLED                 = 'y',
+			AVR109_COMMAND_ExitBootloader           = 'E',
+		};
 
 	/* Type Defines: */
 		/** Type define for a non-returning pointer to the start of the loaded application in flash memory. */
@@ -74,6 +121,8 @@
 	/* Function Prototypes: */
 		static void CDC_Task(void);
 		static void SetupHardware(void);
+
+		void Application_Jump_Check(void) ATTR_INIT_SECTION(3);
 
 		void EVENT_USB_Device_ConfigurationChanged(void);
 
