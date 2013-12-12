@@ -21,7 +21,7 @@ Notes from SparkFun:
 In order to compile the modified LUFA bootloader, or the Virtual Serial
 example for your Sparkfun 32u4 Breakout Board, follow these instructions:
 
-1. Download the LUFA Project, version 130303
+1. Download the LUFA Project, version 130303,  version 120219 for VirtualSerial
 
 Visit http://www.lufa-lib.org, then download LUFA-130303.zip
 
